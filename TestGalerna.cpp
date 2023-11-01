@@ -44,6 +44,11 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in, AudioHandle::Interle
 
 }
 
+void UpdateLeds(){
+    galerna.setLed(daisyGalerna::Galerna::Led::LED_0,galerna.GetPotValue(daisyGalerna::Galerna::Pot::POT_3));
+    galerna.setLed(daisyGalerna::Galerna::Led::LED_1,dryWeight.Value());
+    galerna.updateLeds();
+}
 
 int main(void)
 {
@@ -63,5 +68,6 @@ int main(void)
 	galerna.hw.StartAudio(AudioCallback);
 	while(1) {
         System::Delay(10);
+        UpdateLeds();
     }
 }

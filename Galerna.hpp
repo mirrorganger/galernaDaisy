@@ -24,7 +24,7 @@ public:
         POT_7 = 7U
     };
 
-    enum class Leds : uint_fast8_t 
+    enum class Led : uint_fast8_t 
     {
         LED_0 = 0U,
         LED_1 = 1U,
@@ -37,16 +37,21 @@ public:
     void processAnalogControls();
     float GetPotValue(Pot pot);
     void bindParameterToAnalogControl(daisy::Parameter& param, Pot pot, float min, float max, daisy::Parameter::Curve curve);
+    void setLed(Led led, float brigthness);
+    void updateLeds();
+
+
     daisy::DaisySeed hw;
 
 private:
     void configureAnanalogControls();
+    void configureLeds();
 
-    static constexpr std::size_t NUM_POTS = 8u;
-    static constexpr std::size_t NUM_LEDS = 4u;
+    static constexpr std::size_t NUM_POTS = 8U;
+    static constexpr std::size_t NUM_LEDS = 4U;
 
     std::array<daisy::AnalogControl,NUM_POTS> _pots;
-    std::array<daisy::Led,NUM_POTS> _leds;
+    std::array<daisy::Led,NUM_LEDS> _leds;
 
 };
 }

@@ -17,6 +17,7 @@ void Galerna::init(){
     hw.Configure();
     hw.Init();
     configureAnanalogControls();
+    configureLeds();
 }
 
 void Galerna::processAnalogControls(){
@@ -31,6 +32,17 @@ float Galerna::GetPotValue(Pot pot){
 
 void Galerna::bindParameterToAnalogControl(daisy::Parameter& param, Pot pot, float min, float max, daisy::Parameter::Curve curve){
     param.Init(_pots[static_cast<std::size_t>(pot)],min,max,curve);
+}
+
+void Galerna::setLed(Led led, float brightness){
+    _leds[static_cast<std::size_t>(led)].Set(brightness);
+}
+
+void Galerna::updateLeds(){
+    for (auto led : _leds)
+    {
+        led.Update();
+    }    
 }
 
 
@@ -48,6 +60,15 @@ void Galerna::configureAnanalogControls(){
     }
 }
 
+void Galerna::configureLeds(){
+    using namespace daisy::seed;
+    std::array<daisy::Pin, Galerna::NUM_LEDS> LED_PINS = {D0,D1,D2,D3};
+    for (size_t i = 0; i < Galerna::NUM_LEDS; i++)
+    {
+        _leds[i].Init(LED_PINS[i], false, 100);
+    }
+    
+}
 
 
 }
