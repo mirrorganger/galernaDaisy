@@ -1,6 +1,7 @@
 #pragma once
 
 #include "daisy_seed.h"
+#include "dev/oled_ssd130x.h"
 #include <cstdint>
 #include <array>
 
@@ -11,6 +12,8 @@ namespace daisyGalerna
 class Galerna
 {
 public:
+
+    using GalernaDisplay = daisy::OledDisplay<daisy::SSD130xI2c128x64Driver>;
 
     enum class Pot : uint_fast8_t 
     {
@@ -44,7 +47,7 @@ public:
     void bindParameterToAnalogControl(daisy::Parameter& param, Pot pot, float min, float max, daisy::Parameter::Curve curve);
     void setLed(Led led, float brigthness);
     void updateLeds();
-
+    void displayControls(bool invert);
 
     daisy::DaisySeed hw;
 
@@ -52,6 +55,7 @@ private:
     void configureAnanalogControls();
     void configureDigitalInputs();
     void configureLeds();
+    void configureDisplay();
 
     static constexpr std::size_t NUM_POTS = 8U;
     static constexpr std::size_t NUM_LEDS = 4U;
@@ -60,7 +64,9 @@ private:
     std::array<daisy::AnalogControl,NUM_POTS> _pots;
     std::array<daisy::Led,NUM_LEDS> _leds;
     std::array<daisy::Switch,NUM_SWITCHES> _switches;
-
+    GalernaDisplay _display;
+    uint32_t _screenUpdatePeriod;
+    uint32_t _lastScreenUpdate;
 };
 }
 

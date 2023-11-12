@@ -24,6 +24,9 @@ void Galerna::init(){
     configureAnanalogControls();
     configureDigitalInputs();
     configureLeds();
+    configureDisplay();
+    _screenUpdatePeriod = 17; // roughly 60Hz
+    _lastScreenUpdate   = hw.system.GetNow();
 }
 
 void Galerna::processAnalogControls(){
@@ -58,6 +61,39 @@ void Galerna::updateLeds(){
     }    
 }
 
+void Galerna::displayControls(bool invert)
+{
+    bool on, off;
+    on  = invert ? false : true;
+    off = invert ? true : false;
+    if(hw.system.GetNow() - _lastScreenUpdate > _screenUpdatePeriod)
+    {
+        // Graph Pots
+        size_t barwidth, barspacing;
+        size_t curx, cury;
+        _lastScreenUpdate = hw.system.GetNow();
+        barspacing          = 5;    
+        barwidth            = (_display.Width() - (barspacing * (NUM_POTS - 1U)))/NUM_POTS;
+        _display.Fill(off);
+        for(size_t i = 0; i < NUM_POTS; i++)
+        {
+            float  v;
+            size_t dest;
+            curx = (barspacing * i + 1) + (barwidth * i);
+            cury = _display.Height();
+            v    = getPotValue(static_cast<Pot>(i));
+            dest = (v * _display.Height());
+            for(size_t j = dest; j > 0; j--)
+            {
+                for(size_t k = 0; k < barwidth; k++)
+                {
+                    _display.DrawPixel(curx + k, cury - j, on);
+                }
+            }
+        }
+        _display.Update();
+    }
+}
 
 void Galerna::configureAnanalogControls(){
 
@@ -89,6 +125,12 @@ void Galerna::configureLeds(){
         _leds[i].Init(LED_PINS[i], false, 100);
     }  
 }
+
+void Galerna::configureDisplay(){
+    GalernaDisplay::Config display_config;
+    _display.Init(display_config);
+}
+
 
 
 }

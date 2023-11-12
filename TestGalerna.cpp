@@ -76,5 +76,6 @@ int main(void)
 	while(1) {
         System::Delay(10);
         UpdateLeds();
+        galerna.displayControls(false);
     }
 }
