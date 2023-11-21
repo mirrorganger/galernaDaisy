@@ -8,7 +8,7 @@ using namespace daisysp;
 using namespace daisy::seed;
 
 static daisysp::ReverbSc reverb;
-static daisyGalerna::Galerna galerna;
+static galernaDaisy::Galerna galerna;
 static daisy::Parameter reverbLpParam;
 static daisy::Parameter dryWeight;
 static daisy::Parameter feedback;
@@ -27,7 +27,7 @@ void Controls(){
 void AudioCallback(AudioHandle::InterleavingInputBuffer in, AudioHandle::InterleavingOutputBuffer out, size_t size)
 {
     Controls();
-    auto dry = galerna.getSwitchState(daisyGalerna::Galerna::Switch::SW_0)? dryWeight.Value():1.0;
+    auto dry = galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_0)? dryWeight.Value():1.0;
 
     for (size_t i = 0; i < size; i+=2)
     {
@@ -47,10 +47,10 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in, AudioHandle::Interle
 
 void UpdateLeds(){
 
-    galerna.setLed(daisyGalerna::Galerna::Led::LED_0,galerna.getSwitchState(daisyGalerna::Galerna::Switch::SW_0));
-    galerna.setLed(daisyGalerna::Galerna::Led::LED_1,galerna.getSwitchState(daisyGalerna::Galerna::Switch::SW_1));
-    galerna.setLed(daisyGalerna::Galerna::Led::LED_2,dryWeight.Value());
-    galerna.setLed(daisyGalerna::Galerna::Led::LED_3,feedback.Value());
+    galerna.setLed(galernaDaisy::Galerna::Led::LED_0,galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_0));
+    galerna.setLed(galernaDaisy::Galerna::Led::LED_1,galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_1));
+    galerna.setLed(galernaDaisy::Galerna::Led::LED_2,dryWeight.Value());
+    galerna.setLed(galernaDaisy::Galerna::Led::LED_3,feedback.Value());
 
     galerna.updateLeds();
 }
@@ -60,9 +60,9 @@ int main(void)
     galerna.init();
 
     galerna.hw.SetAudioBlockSize(48);
-    galerna.bindParameterToAnalogControl(reverbLpParam, daisyGalerna::Galerna::Pot::POT_0, 400,22000,daisy::Parameter::Curve::LOGARITHMIC);
-    galerna.bindParameterToAnalogControl(dryWeight, daisyGalerna::Galerna::Pot::POT_1, 0.2,0.8,daisy::Parameter::Curve::LOGARITHMIC);
-    galerna.bindParameterToAnalogControl(feedback, daisyGalerna::Galerna::Pot::POT_2, 0.2,0.8,daisy::Parameter::Curve::LOGARITHMIC);
+    galerna.bindParameterToAnalogControl(reverbLpParam, galernaDaisy::Galerna::Pot::POT_0, 400,22000,daisy::Parameter::Curve::LOGARITHMIC);
+    galerna.bindParameterToAnalogControl(dryWeight, galernaDaisy::Galerna::Pot::POT_1, 0.2,0.8,daisy::Parameter::Curve::LOGARITHMIC);
+    galerna.bindParameterToAnalogControl(feedback, galernaDaisy::Galerna::Pot::POT_2, 0.2,0.8,daisy::Parameter::Curve::LOGARITHMIC);
 
     reverb.Init(galerna.hw.AudioSampleRate());
 

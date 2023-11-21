@@ -1,7 +1,7 @@
 #include "Galerna.hpp"
 
 
-namespace daisyGalerna{
+namespace galernaDaisy{
 
 constexpr std::size_t numberOfbits(std::size_t x)
 {
