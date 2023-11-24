@@ -74,7 +74,7 @@ int main(void)
     galerna.hw.adc.Start();
 	galerna.hw.StartAudio(AudioCallback);
 	while(1) {
-        System::Delay(10);
+        System::Delay(30);
         UpdateLeds();
         galerna.displayControls(false);
     }

@@ -142,7 +142,7 @@ FUNCTION(add_daisy_firmware)
         COMMENT "Copying binary to products folder..."
     )
 
-    add_custom_target(upload-dfu DEPENDS ${FIRMWARE_NAME}
+    add_custom_target(upload-dfu-${FIRMWARE_NAME} DEPENDS ${FIRMWARE_NAME}
         COMMAND dfu-util -a 0 -s ${FLASH_ADDRESS}:leave -D ${FIRMWARE_NAME}.bin -d ,0483:df11
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/products
         COMMENT "Uploading to board...")
