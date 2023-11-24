@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <array>
 
-namespace daisyGalerna
+namespace galernaDaisy
 {
 
 
