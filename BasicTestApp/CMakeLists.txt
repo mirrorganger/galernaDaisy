@@ -1,1 +1,1 @@
-add_daisy_firmware(NAME BasicTestApp DEPENDS galernaDaisy)
+add_daisy_firmware(NAME BasicTestApp DEPENDS galernaDaisy TrillDaisy)

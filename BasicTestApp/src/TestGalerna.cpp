@@ -1,5 +1,6 @@
 #include "daisy_seed.h"
 #include "Galerna.hpp"
+#include "Trill.h"
 #include "daisysp.h"
 #include <array>
 #include <bitset>
@@ -12,6 +13,8 @@ static galernaDaisy::Galerna galerna;
 static daisy::Parameter reverbLpParam;
 static daisy::Parameter dryWeight;
 static daisy::Parameter feedback;
+
+TrillDaisy::Trill trill;
 
 void UpdateKnobs(){
     reverb.SetLpFreq(reverbLpParam.Process());
@@ -69,6 +72,8 @@ int main(void)
     //reverb parameters
     reverb.SetLpFreq(18000.0f);
     reverb.SetFeedback(0.85f);
+
+    trill.init(TrillDaisy::Trill::DeviceType::TRILL_SQUARE);
 
     // galerna.hw.StartLog(false);
     galerna.hw.adc.Start();

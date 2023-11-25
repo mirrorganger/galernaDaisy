@@ -5,6 +5,7 @@ include(cmake/daisy-setup.cmake)
 
 add_subdirectory(${LIBDAISY_DIR} libdaisy)
 add_subdirectory(${DAISYSP_DIR} DaisySP)
+add_subdirectory(TrillDaisy)
 add_subdirectory(GalernaDaisy)
 add_subdirectory(BasicTestApp)
 add_subdirectory(ThxSeedApp)
