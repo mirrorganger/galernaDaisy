@@ -29,9 +29,21 @@ void Galerna::init(){
     _lastScreenUpdate   = hw.system.GetNow();
 }
 
+void Galerna::processAll(){
+    processAnalogControls();
+    processDigitalControls();
+    updateLeds();
+}
+
 void Galerna::processAnalogControls(){
     for (auto& pot : _pots){
         pot.Process();
+    }
+}
+
+void Galerna::processDigitalControls(){
+    for (auto& button : _buttons){
+        button.Debounce();
     }
 }
 
@@ -43,6 +55,9 @@ bool Galerna::getSwitchState(Switch sw){
     return _switches[static_cast<std::size_t>(sw)].RawState();
 }
 
+bool Galerna::getButtonState(Button btn){
+    return _buttons[static_cast<std::size_t>(btn)].Pressed();
+}
 
 void Galerna::bindParameterToAnalogControl(daisy::Parameter& param, Pot pot, float min, float max, daisy::Parameter::Curve curve){
     param.Init(_pots[static_cast<std::size_t>(pot)],min,max,curve);
@@ -52,18 +67,24 @@ void Galerna::setLed(Led led, float brightness){
     _leds[static_cast<std::size_t>(led)].Set(brightness);
 }
 
-
-
 void Galerna::updateLeds(){
-    for (auto led : _leds)
+    for (auto& led : _leds)
     {
         led.Update();
     }    
 }
 
+void Galerna::displayInitialText(const char* textToDisplay, const uint32_t displayTime_ms){
+    _display.Fill(false);
+    _display.WriteStringAligned(textToDisplay,Font_7x10,_display.GetBounds(),daisy::Alignment::centered,true);
+    _display.Update();
+    hw.DelayMs(displayTime_ms);
+}
+
 void Galerna::displayControls(bool invert)
 {
-    bool on, off;
+    bool on;
+    bool off;
     on  = invert ? false : true;
     off = invert ? true : false;
     if(hw.system.GetNow() - _lastScreenUpdate > _screenUpdatePeriod)
@@ -112,18 +133,26 @@ void Galerna::configureAnanalogControls(){
 
 void Galerna::configureDigitalInputs(){
     constexpr std::array<daisy::Pin, NUM_SWITCHES> SW_PINS = {daisy::seed::D16,daisy::seed::D15}; 
+    constexpr std::array<daisy::Pin, NUM_BUTTONS> BTN_PINS = {daisy::seed::D18,daisy::seed::D17};
     for (size_t i = 0; i < NUM_SWITCHES; i++)
     {
         _switches[i].Init(dsy_gpio_pin(SW_PINS[i]));
     }
+
+    for (size_t i = 0; i < NUM_BUTTONS; i++)
+    {
+        _buttons[i].Init(dsy_gpio_pin(BTN_PINS[i]));
+    }
+    
 }
 
 void Galerna::configureLeds(){
-    std::array<daisy::Pin, Galerna::NUM_LEDS> LED_PINS = {daisy::seed::D23,daisy::seed::D24,daisy::seed::D25,daisy::seed::D26};
+    constexpr std::array<daisy::Pin, Galerna::NUM_LEDS> LED_PINS = {daisy::seed::D23,daisy::seed::D24,daisy::seed::D25,daisy::seed::D26};
     for (size_t i = 0; i < Galerna::NUM_LEDS; i++)
     {
-        _leds[i].Init(LED_PINS[i], false, 100);
+        _leds[i].Init(LED_PINS[i], false);
     }  
+
 }
 
 void Galerna::configureDisplay(){

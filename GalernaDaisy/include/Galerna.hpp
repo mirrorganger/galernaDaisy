@@ -40,13 +40,22 @@ public:
         SW_1 = 1U
     };
 
+    enum class Button: uint_fast8_t{
+        BTN_0 = 0U,
+        BTN_1 = 1U
+    };
+
     void init();
+    void processAll();
     void processAnalogControls();
+    void processDigitalControls();
     float getPotValue(Pot pot);
     bool getSwitchState(Switch sw);
+    bool getButtonState(Button btn);
     void bindParameterToAnalogControl(daisy::Parameter& param, Pot pot, float min, float max, daisy::Parameter::Curve curve);
     void setLed(Led led, float brigthness);
     void updateLeds();
+    void displayInitialText(const char* textToDisplay, const uint32_t displayTime_ms = 1000U);
     void displayControls(bool invert);
 
     daisy::DaisySeed hw;
@@ -60,10 +69,12 @@ private:
     static constexpr std::size_t NUM_POTS = 8U;
     static constexpr std::size_t NUM_LEDS = 4U;
     static constexpr std::size_t NUM_SWITCHES = 2U;
+    static constexpr std::size_t NUM_BUTTONS = 2U;
 
     std::array<daisy::AnalogControl,NUM_POTS> _pots;
     std::array<daisy::Led,NUM_LEDS> _leds;
     std::array<daisy::Switch,NUM_SWITCHES> _switches;
+    std::array<daisy::Switch,NUM_BUTTONS> _buttons;
     GalernaDisplay _display;
     uint32_t _screenUpdatePeriod;
     uint32_t _lastScreenUpdate;

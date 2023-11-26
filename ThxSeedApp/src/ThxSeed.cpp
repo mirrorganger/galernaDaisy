@@ -45,7 +45,7 @@ void UpdateInputs() {
 }
 
 void Controls() {
-  galerna.processAnalogControls();
+  galerna.processAll();
   UpdateInputs();
 }
 
@@ -74,14 +74,12 @@ void AudioCallback(AudioHandle::InputBuffer, AudioHandle::OutputBuffer out,
 void UpdateLeds() {
 
   galerna.setLed(galernaDaisy::Galerna::Led::LED_0,
-                 galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_0));
+                 galerna.getButtonState(galernaDaisy::Galerna::Button::BTN_0));
   galerna.setLed(galernaDaisy::Galerna::Led::LED_1,
-                 galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_1));
+                 galerna.getButtonState(galernaDaisy::Galerna::Button::BTN_1));
   galerna.setLed(galernaDaisy::Galerna::Led::LED_2, pitchParam.Value());
   galerna.setLed(galernaDaisy::Galerna::Led::LED_3,
                  numberOfVoicesParam.Value());
-
-  galerna.updateLeds();
 }
 
 int main() {
@@ -125,6 +123,9 @@ int main() {
   flt.Init(galerna.hw.AudioSampleRate());
   galerna.hw.adc.Start();
   galerna.hw.StartAudio(AudioCallback);
+
+  galerna.displayInitialText("Galerna : ThxSeed");
+
   while (true) {
     System::Delay(10);
     UpdateLeds();
