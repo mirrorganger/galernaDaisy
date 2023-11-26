@@ -20,7 +20,7 @@ void UpdateKnobs(){
 }
 
 void Controls(){
-    galerna.processAnalogControls();
+    galerna.processAll();
     UpdateKnobs();
 }
 
@@ -51,8 +51,6 @@ void UpdateLeds(){
     galerna.setLed(galernaDaisy::Galerna::Led::LED_1,galerna.getSwitchState(galernaDaisy::Galerna::Switch::SW_1));
     galerna.setLed(galernaDaisy::Galerna::Led::LED_2,dryWeight.Value());
     galerna.setLed(galernaDaisy::Galerna::Led::LED_3,feedback.Value());
-
-    galerna.updateLeds();
 }
 
 int main(void)
@@ -65,15 +63,12 @@ int main(void)
     galerna.bindParameterToAnalogControl(feedback, galernaDaisy::Galerna::Pot::POT_2, 0.2,0.8,daisy::Parameter::Curve::LOGARITHMIC);
 
     reverb.Init(galerna.hw.AudioSampleRate());
-
-    //reverb parameters
     reverb.SetLpFreq(18000.0f);
     reverb.SetFeedback(0.85f);
 
-    // galerna.hw.StartLog(false);
     galerna.hw.adc.Start();
 	galerna.hw.StartAudio(AudioCallback);
-	while(1) {
+	while(true) {
         System::Delay(30);
         UpdateLeds();
         galerna.displayControls(false);

@@ -126,7 +126,7 @@ void Galerna::configureAnanalogControls() {
   hw.adc.Init(&adcConfig, 1U);
   for (size_t pot_i = 0; pot_i < _pots.size(); pot_i++) {
     _pots[pot_i].Init(hw.adc.GetMuxPtr(0, POTS_PCB_ORDER[pot_i]),
-                      hw.AudioCallbackRate());
+                      hw.AudioCallbackRate(), true);
   }
 }
 
