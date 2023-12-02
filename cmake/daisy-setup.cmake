@@ -138,7 +138,7 @@ FUNCTION(add_daisy_firmware)
         TARGET ${FIRMWARE_NAME}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy ${FIRMWARE_NAME}.bin ${CMAKE_SOURCE_DIR}/products
+        ARGS -E copy ${FIRMWARE_NAME}.bin ${FIRMWARE_NAME}.elf ${CMAKE_SOURCE_DIR}/products
         COMMENT "Copying binary to products folder..."
     )
 
