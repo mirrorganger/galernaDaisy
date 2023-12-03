@@ -7,4 +7,4 @@ This repo contains the infrastructure code to control Galerna, and some Apps tha
 The project uses 
 
 - [libDaisy](https://github.com/electro-smith/libDaisy)
-- [DaisySp](https://github.com/electro-smith/libDaisy)
+- [DaisySP](https://github.com/electro-smith/DaisySP)
