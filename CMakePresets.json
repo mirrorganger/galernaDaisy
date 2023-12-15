@@ -1,5 +1,5 @@
 {
-    "version": 3,
+    "version": 6,
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 21,
@@ -24,14 +24,20 @@
         {
             "name": "daisy-debug",
             "displayName": "Daisy Debug",
-            "inherits" : "daisy-base"
+            "inherits" : "daisy-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE":"Debug",
+                "LINKER_SCRIPT_FILE":"STM32H750IB_sram.lds"
+            }
+
         },
         {
             "name": "daisy-release",
             "displayName": "Daisy Release",
             "inherits" : "daisy-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE":"Release"
+                "CMAKE_BUILD_TYPE":"Release",
+                "LINKER_SCRIPT_FILE":"STM32H750IB_flash.lds"
             }
 
         }
@@ -52,5 +58,32 @@
             "inherits" : "daisy-build-base",
             "configurePreset": "daisy-release"
         }
-    ]
+    ],
+    "workflowPresets": [
+        {
+          "name": "release-workflow",
+          "steps": [
+            {
+                "type" : "configure",
+                "name" : "daisy-release"
+            },
+            {
+                "type" : "build",
+                "name" : "daisy-build-release"
+            }
+            ]
+        },
+        {   
+            "name" : "debug-workflow",
+            "steps" : [
+            {
+                "type" : "configure",
+                "name" : "daisy-debug"
+            },
+            {
+                "type" : "build",
+                "name" : "daisy-build-debug"
+            }]
+        }
+    ]  
 }

@@ -10,8 +10,8 @@ using namespace daisysp;
 using namespace daisy::seed;
 
 static constexpr std::size_t NR_VOICES = 15;
-std::array<mirroraudio::ThxVoice, NR_VOICES> thxVoices;
-daisysp::MoogLadder flt;
+std::array<mirroraudio::ThxVoice, NR_VOICES> DSY_SDRAM_BSS thxVoices;
+daisysp::MoogLadder DSY_SDRAM_BSS flt;
 
 static galernaDaisy::Galerna galerna;
 static daisy::Parameter pitchParam;
@@ -23,7 +23,7 @@ static daisy::Parameter numberOfVoicesParam;
 
 bool trigger = false;
 
-daisysp::ReverbSc reverb;
+daisysp::ReverbSc DSY_SDRAM_BSS reverb;
 Overdrive drive;
 
 void UpdateInputs() {

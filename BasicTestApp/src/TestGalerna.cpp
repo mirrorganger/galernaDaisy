@@ -7,8 +7,8 @@ using namespace daisy;
 using namespace daisysp;
 using namespace daisy::seed;
 
-static daisysp::ReverbSc reverb;
-static galernaDaisy::Galerna galerna;
+static daisysp::ReverbSc DSY_SDRAM_BSS reverb;
+galernaDaisy::Galerna  galerna;
 static daisy::Parameter reverbLpParam;
 static daisy::Parameter dryWeight;
 static daisy::Parameter feedback;

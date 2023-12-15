@@ -1,13 +1,16 @@
 # This assumes libdaisy and daisy exists both as submodules in the top directory.
 
-
 set(LIBDAISY_DIR ${CMAKE_SOURCE_DIR}/libDaisy)
 set(DAISYSP_DIR  ${CMAKE_SOURCE_DIR}/DaisySP)
 
 set(FLASH_ADDRESS 0x08000000)
 
 set(DAISYSP_LIB DaisySP)
-set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/STM32H750IB_flash.lds)
+set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/${LINKER_SCRIPT_FILE})
+
+set(OCD_DIR /usr/local/share/openocd/scripts)
+set(PGM_DEVICE interface/stlink.cfg)
+set(CHIPSET stm32h7x)
 
 FUNCTION(find_files_matching_patterns output directory filter_masks)
 	set( file_list )	
@@ -147,9 +150,20 @@ FUNCTION(add_daisy_firmware)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/products
         COMMENT "Uploading to board...")
 
+    add_custom_target(upload-openocd-${FIRMWARE_NAME} DEPENDS ${FIRMWARE_NAME}
+        COMMAND openocd -s "${OCD_DIR}" -f "${PGM_DEVICE}" -f "target/${CHIPSET}.cfg" -c "program ${FIRMWARE_NAME}.elf verify reset exit"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/products
+        COMMENT "Uploading to board...")
 
 ENDFUNCTION()
 
 
+# $(OCD) -s $(OCD_DIR) $(OCDFLAGS) \
+# -c "program ./build/$(TARGET).elf verify reset exit"
 
 
+
+# OCD=openocd
+# OCD_DIR ?= /usr/local/share/openocd/scripts
+# PGM_DEVICE ?= interface/stlink.cfg
+# OCDFLAGS = -f $(PGM_DEVICE) -f target/$(CHIPSET).cfg
