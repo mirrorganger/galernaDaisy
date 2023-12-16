@@ -18,7 +18,8 @@
                 "CMAKE_TOOLCHAIN_FILE":{
                     "type": "FILEPATH",
                     "value" : "${sourceDir}/cmake/arm-cortex-gnu-toolchain.cmake"
-                }
+                },
+                "APP_TYPE":"BOOT_NONE"
             } 
         },
         {
@@ -27,7 +28,7 @@
             "inherits" : "daisy-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE":"Debug",
-                "LINKER_SCRIPT_FILE":"STM32H750IB_sram.lds"
+                "APP_TYPE":"BOOT_SRAM"
             }
 
         },
@@ -36,8 +37,7 @@
             "displayName": "Daisy Release",
             "inherits" : "daisy-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE":"Release",
-                "LINKER_SCRIPT_FILE":"STM32H750IB_flash.lds"
+                "CMAKE_BUILD_TYPE":"Release"
             }
 
         }
