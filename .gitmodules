@@ -1,3 +1,6 @@
 [submodule "DaisySP"]
 	path = DaisySP
 	url = https://github.com/electro-smith/DaisySP.git
+[submodule "libDaisy"]
+	path = libDaisy
+	url = git@github.com:mirrorganger/libDaisy.git
