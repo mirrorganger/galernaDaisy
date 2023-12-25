@@ -8,6 +8,7 @@ add_subdirectory(${DAISYSP_DIR} DaisySP)
 add_subdirectory(GalernaDaisy)
 add_subdirectory(BasicTestApp)
 add_subdirectory(ThxSeedApp)
+add_subdirectory(TestSDApp)
 
 
 

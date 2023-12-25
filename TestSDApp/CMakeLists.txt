@@ -1,0 +1,1 @@
+add_daisy_firmware(NAME TestSDApp DEPENDS galernaDaisy)
