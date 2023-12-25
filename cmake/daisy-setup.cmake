@@ -1,37 +1,40 @@
 # This assumes libdaisy and daisy exists both as submodules in the top directory.
 
+include(${CMAKE_CURRENT_LIST_DIR}/helper-functions.cmake)
+
+############## SETTINGS ##########################
 set(LIBDAISY_DIR ${CMAKE_SOURCE_DIR}/libDaisy)
 set(DAISYSP_DIR  ${CMAKE_SOURCE_DIR}/DaisySP)
-
-set(FLASH_ADDRESS 0x08000000)
-
 set(DAISYSP_LIB DaisySP)
-set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/${LINKER_SCRIPT_FILE})
-
-set(OCD_DIR /usr/local/share/openocd/scripts)
+set(OCD_DIR /usr/local/share/openocd/scripts) # @todo : make this configurable 
 set(PGM_DEVICE interface/stlink.cfg)
 set(CHIPSET stm32h7x)
+set(BOOT_FILES_FILTER_MASK *.bin)
+find_files_matching_patterns(DAISY_BOOTLOADER ${LIBDAISY_DIR}/core ${BOOT_FILES_FILTER_MASK})
 
-FUNCTION(find_files_matching_patterns output directory filter_masks)
-	set( file_list )	
-	foreach( filter_mask ${filter_masks} )
-		file(GLOB_RECURSE found_files ${directory}/${filter_mask})
-		list(APPEND file_list ${found_files})
-		endforeach()
-	set(${output} ${file_list} PARENT_SCOPE)
-ENDFUNCTION()
+############## MEMORY AND BOOTLOADER  #############################
+# Taken from Memory sections defined in the linker script
+set(FLASH_ADDRESS 0x08000000)
+set(QSPI_ADDRESS 0x90040000)
 
-FUNCTION(__add_dependencies TARGET TARGET_DEPENDS TARGET_DEPENDS_NO_TARGET)
-	foreach( dependency ${TARGET_DEPENDS} ) 
-		if (NOT TARGET ${dependency})
-			message(FATAL_ERROR "The dependency target \"${dependency}\" of target \"${TARGET}\" does not exist, please check and reorder the add_subdirectory() base on dependency")
-		endif() 
-		target_link_libraries(${TARGET} PUBLIC ${dependency})
-	endforeach()
-	foreach( dependency ${TARGET_DEPENDS_NO_TARGET} ) 
-		target_link_libraries(${TARGET} PUBLIC ${dependency})
-	endforeach()
-ENDFUNCTION()
+if(${APP_TYPE} STREQUAL "BOOT_QSPI")
+    message(STATUS "${APP_TYPE} selected")
+    message(STATUS "Daisy bootloader : ${DAISY_BOOTLOADER}")
+    set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/STM32H750IB_qspi.lds)
+    set(LOAD_ADDRESS ${QSPI_ADDRESS})
+    set(BOOTLOADER_ADDRESS ${FLASH_ADDRESS})
+elseif(${APP_TYPE} STREQUAL "BOOT_SRAM")
+    message(STATUS "${APP_TYPE} selected")
+    message(STATUS "Daisy bootloader : ${DAISY_BOOTLOADER}")
+    set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/STM32H750IB_sram.lds)
+    set(LOAD_ADDRESS ${QSPI_ADDRESS})
+    set(BOOTLOADER_ADDRESS ${FLASH_ADDRESS})
+else()
+    message(STATUS "${APP_TYPE} selected")
+    set(LINKER_SCRIPT ${LIBDAISY_DIR}/core/STM32H750IB_flash.lds)
+    set(LOAD_ADDRESS ${FLASH_ADDRESS})
+endif()
+
 
 FUNCTION(add_daisy_library)
 	set(options UNIT_TEST)
@@ -75,7 +78,6 @@ FUNCTION(add_daisy_library)
 ENDFUNCTION()
 
 
-
 FUNCTION(add_daisy_firmware)
 	set(options)
 	set(oneValueArgs NAME)
@@ -105,6 +107,7 @@ FUNCTION(add_daisy_firmware)
         SUFFIX ".elf"
     )
 
+   
     target_link_options(${FIRMWARE_NAME} PUBLIC
         -T ${LINKER_SCRIPT}
         -Wl,-Map=${FIRMWARE_NAME}.map,--cref
@@ -124,7 +127,7 @@ FUNCTION(add_daisy_firmware)
         ${FIRMWARE_NAME}.hex
         BYPRODUCTS
         ${FIRMWARE_NAME}.hex
-        COMMENT "Generating HEX image"
+        COMMENT "Generating ${FIRMWARE_NAME} HEX image"
         VERBATIM)
 
     add_custom_command(TARGET ${FIRMWARE_NAME} POST_BUILD
@@ -134,7 +137,7 @@ FUNCTION(add_daisy_firmware)
         ${FIRMWARE_NAME}.bin
         BYPRODUCTS
         ${FIRMWARE_NAME}.bin
-        COMMENT "Generating binary image"
+        COMMENT "Generating ${FIRMWARE_NAME} binary image"
     VERBATIM)
 
     add_custom_command(
@@ -142,28 +145,21 @@ FUNCTION(add_daisy_firmware)
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
         ARGS -E copy ${FIRMWARE_NAME}.bin ${FIRMWARE_NAME}.elf ${CMAKE_SOURCE_DIR}/products
-        COMMENT "Copying binary to products folder..."
+        COMMENT "Copying ${FIRMWARE_NAME} binary products to ${CMAKE_SOURCE_DIR}/products folder"
     )
 
     add_custom_target(upload-dfu-${FIRMWARE_NAME} DEPENDS ${FIRMWARE_NAME}
-        COMMAND dfu-util -a 0 -s ${FLASH_ADDRESS}:leave -D ${FIRMWARE_NAME}.bin -d ,0483:df11
+        COMMAND dfu-util -a 0 -s ${LOAD_ADDRESS}:leave -D ${FIRMWARE_NAME}.bin -d ,0483:df11
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/products
-        COMMENT "Uploading to board...")
+        COMMENT "Uploading ${FIRMWARE_NAME} to board...")
 
     add_custom_target(upload-openocd-${FIRMWARE_NAME} DEPENDS ${FIRMWARE_NAME}
         COMMAND openocd -s "${OCD_DIR}" -f "${PGM_DEVICE}" -f "target/${CHIPSET}.cfg" -c "program ${FIRMWARE_NAME}.elf verify reset exit"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/products
-        COMMENT "Uploading to board...")
+        COMMENT "Uploading ${FIRMWARE_NAME} to board...")
 
+    add_custom_target(upload-bootloader-${FIRMWARE_NAME} DEPENDS ${FIRMWARE_NAME}
+        COMMAND dfu-util -a 0 -s ${BOOTLOADER_ADDRESS}:leave -D ${DAISY_BOOTLOADER} -d ,0483:df11
+        WORKING_DIRECTORY ${LIBDAISY_DIR}/core
+        COMMENT "Uploading daisy-booloader to board...")
 ENDFUNCTION()
-
-
-# $(OCD) -s $(OCD_DIR) $(OCDFLAGS) \
-# -c "program ./build/$(TARGET).elf verify reset exit"
-
-
-
-# OCD=openocd
-# OCD_DIR ?= /usr/local/share/openocd/scripts
-# PGM_DEVICE ?= interface/stlink.cfg
-# OCDFLAGS = -f $(PGM_DEVICE) -f target/$(CHIPSET).cfg

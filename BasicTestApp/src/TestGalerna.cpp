@@ -68,6 +68,7 @@ int main(void)
 
     galerna.hw.adc.Start();
 	galerna.hw.StartAudio(AudioCallback);
+    galerna.displayInitialText("BasicTestApp");
 	while(true) {
         System::Delay(30);
         UpdateLeds();
