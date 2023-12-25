@@ -31,6 +31,8 @@ set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qcs <TARGET> <LINK_FLAGS> <OBJECTS>")
 set(CMAKE_CXX_ARCHIVE_FINISH   true)
 
 
+
+
 #---------------------------------------------------------------------------------------
 # Preprocessor definitions
 #---------------------------------------------------------------------------------------
@@ -45,6 +47,14 @@ add_compile_definitions(
         USE_FULL_LL_DRIVER
 )
 
+if(NOT ${APP_TYPE} STREQUAL "BOOT_NONE")
+        message(STATUS "Adding boot flag")
+        add_compile_definitions(
+                BOOT_APP
+        )       
+endif()
+
+
 #---------------------------------------------------------------------------------------
 # Set linker flags
 #---------------------------------------------------------------------------------------
@@ -53,8 +63,6 @@ add_compile_definitions(
 # --specs=nano.specs    Link with newlib-nano.
 # --specs=nosys.specs   No syscalls, provide empty implementations for the POSIX system calls.
 set(CMAKE_EXE_LINKER_FLAGS "${MCPU_FLAGS} ${VFP_FLAGS} -Wl,--gc-sections --specs=nano.specs --specs=nosys.specs" CACHE INTERNAL "Linker options")
-
-
 
 #---------------------------------------------------------------------------------------
 # Set compiler debug flags

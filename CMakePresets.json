@@ -1,8 +1,8 @@
 {
-    "version": 6,
+    "version": 7,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 21,
+        "minor": 26,
         "patch": 0
     },
     "configurePresets": [
@@ -58,32 +58,5 @@
             "inherits" : "daisy-build-base",
             "configurePreset": "daisy-release"
         }
-    ],
-    "workflowPresets": [
-        {
-          "name": "release-workflow",
-          "steps": [
-            {
-                "type" : "configure",
-                "name" : "daisy-release"
-            },
-            {
-                "type" : "build",
-                "name" : "daisy-build-release"
-            }
-            ]
-        },
-        {   
-            "name" : "debug-workflow",
-            "steps" : [
-            {
-                "type" : "configure",
-                "name" : "daisy-debug"
-            },
-            {
-                "type" : "build",
-                "name" : "daisy-build-debug"
-            }]
-        }
-    ]  
+    ]
 }

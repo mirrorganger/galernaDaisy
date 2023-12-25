@@ -107,10 +107,7 @@ FUNCTION(add_daisy_firmware)
         SUFFIX ".elf"
     )
 
-    if(NOT ${APP_TYPE} STREQUAL "BOOT_NONE")
-        target_compile_options(${FIRMWARE_NAME} PRIVATE -DBOOT_APP)
-    endif()
-    
+   
     target_link_options(${FIRMWARE_NAME} PUBLIC
         -T ${LINKER_SCRIPT}
         -Wl,-Map=${FIRMWARE_NAME}.map,--cref
