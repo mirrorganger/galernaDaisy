@@ -3,6 +3,8 @@
 **_Galerna_** is an auxiliary board for [Electrosmith Daisy Seed](https://www.electro-smith.com/daisy/daisy). 
 
 ![Galerna 3D view](doc/galerna.png "3D Render Galerna")
+![Galerna Running](doc/galerna_2.jpeg "3D Render Galerna")
+
 
 The board contains:
 
