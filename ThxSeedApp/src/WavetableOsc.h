@@ -8,6 +8,7 @@
 #include <functional>
 #include <algorithm>
 #include <math.h>
+#include <array>
 
 namespace audioUtilities
 {

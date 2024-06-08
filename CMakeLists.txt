@@ -13,6 +13,7 @@ add_subdirectory(Dsp)
 add_subdirectory(BasicTestApp)
 add_subdirectory(ThxSeedApp)
 add_subdirectory(SchroederReverbApp)
+add_subdirectory(DattoroReverbApp)
 
 
 
