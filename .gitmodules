@@ -3,4 +3,4 @@
 	url = https://github.com/electro-smith/DaisySP.git
 [submodule "libDaisy"]
 	path = libDaisy
-	url = git@github.com:mirrorganger/libDaisy.git
+	url = https://github.com/electro-smith/libDaisy.git
